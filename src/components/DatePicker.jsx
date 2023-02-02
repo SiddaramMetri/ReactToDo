@@ -1,7 +1,4 @@
-import { useState } from "react";
-
-const DatePicker = () => {
-  const [taskDate, setTaskDate] = useState("");
+const DatePicker = (props) => {
   return (
     <>
       <input
@@ -9,13 +6,13 @@ const DatePicker = () => {
         type="date"
         placeholder="Enter Your Task"
         aria-label="Enter Message"
-        value={taskDate}
+        value={props.taskDate}
         onChange={(e) => {
-            setTaskDate(e.target.value);
+          props.setTaskDate(e.target.value);
         }}
       />
     </>
   );
 };
 
-export default DatePicker
+export default DatePicker;

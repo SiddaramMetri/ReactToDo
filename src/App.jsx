@@ -1,26 +1,84 @@
 import DatePicker from "./components/DatePicker";
 import MessageBox from "./components/MessageBox";
-import { AiFillPlusSquare, AiFillDelete } from "react-icons/ai";
+import { AiFillPlusSquare } from "react-icons/ai";
+import TodoSection from "./components/TodoSection";
+import { useState } from "react";
 
 const App = () => {
+  const [taskMessage, setTaskMessage] = useState("");
+
+  const [taskDate, setTaskDate] = useState(
+    new Date().toISOString().slice(0, 10)
+  );
+
+  const [tasks, setTasks] = useState([]);
+
+  const deleteTask = (id) => {
+    setTasks((prev) => {
+      return prev.filter((task) => {
+        return task.id !== id;
+      });
+    });
+  };
+
   return (
     <div className="container mt-4 item-center">
       <div className="d-flex flex-row gap-3 justify-content-center">
-        <MessageBox />
-        <DatePicker />
-        <AiFillPlusSquare size={40} className="text-primary" />
+        <MessageBox
+          taskMessage={taskMessage}
+          setTaskMessage={setTaskMessage}
+          fun={fun}
+        />
+
+        <DatePicker taskDate={taskDate} setTaskDate={setTaskDate} />
+
+        <button
+          className="border-0 bg-white"
+          onClick={(e) => {
+            if (!taskDate || !taskMessage) {
+              return;
+            }
+            setTasks((prev) => {
+              return [
+                ...prev,
+                {
+                  id: new Date(),
+                  deadline: new Date(taskDate),
+                  message: taskMessage,
+                },
+              ];
+            });
+            setTaskDate(new Date().toISOString().slice(0, 10));
+            setTaskMessage("");
+          }}
+        >
+          <AiFillPlusSquare size={40} className="text-primary" />
+        </button>
       </div>
-      <div className="d-flex flex-col justify-content-center ">
-        <ol className="list-group list-group mt-4 w-75 ">
-          <h5 className="mt-2">OverDue:</h5>
-          <li className="list-group-item mb-2 rounded-top d-flex align-item-center justify-content-between">
-            <span className="text-secondary" style={{fontSize:"12px"}} >{new Date().toDateString()}</span>
-            <span className="text-capitalize">first task</span>
-            <AiFillDelete size={20} color="red" className="border rounded " />
-          </li>
-          <li className="list-group-item">A list item</li>
-          <li className="list-group-item">A list item</li>
-        </ol>
+      <div>
+        <TodoSection
+          title="OverDue"
+          tasks={tasks.filter((task) => {
+            return task.deadline < new Date(new Date().toDateString());
+          })}
+          deleteTask={deleteTask}
+        />
+
+        <TodoSection
+          title="Today"
+          tasks={tasks.filter((task) => {
+            return task.deadline.toDateString() == new Date().toDateString();
+          })}
+          deleteTask={deleteTask}
+        />
+
+        <TodoSection
+          title="Upcomming"
+          tasks={tasks.filter((task) => {
+            return task.deadline > new Date();
+          })}
+          deleteTask={deleteTask}
+        />
       </div>
     </div>
   );

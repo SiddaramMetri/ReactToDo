@@ -1,7 +1,4 @@
-import { useState } from "react";
-
-export default () => {
-  const [taskMessage, setTaskMessage] = useState("");
+const MessageBox = (props) => {
   return (
     <>
       <input
@@ -9,11 +6,13 @@ export default () => {
         type="text"
         placeholder="Enter Your Task"
         aria-label="Enter Message"
-        value={taskMessage}
+        value={props.taskMessage}
         onChange={(e) => {
-          setTaskMessage(e.target.value);
+          props.setTaskMessage(e.target.value);
         }}
       />
     </>
   );
 };
+
+export default MessageBox;
